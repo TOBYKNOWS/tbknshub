@@ -1,0 +1,42 @@
+{% extends "admin_panel/admin_base.html" %}
+{% block title %}Tasks{% endblock %}
+{% block page_title %}Tasks{% endblock %}
+{% block nav_tasks %}active{% endblock %}
+
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+  <div>
+    <h2 class="syne" style="font-size:1.2rem;font-weight:800">Task Board</h2>
+    <p style="color:var(--muted);font-size:0.82rem">{{ tasks|length }} total tasks</p>
+  </div>
+  <button onclick="alert('Create task')" style="background:var(--accent);border:none;color:#fff;padding:0.6rem 1.2rem;border-radius:6px;font-size:0.85rem;cursor:pointer">+ New Task</button>
+</div>
+<div class="panel">
+  <div style="overflow-x:auto">
+    <table class="data-table">
+      <thead><tr><th>#</th><th>Task</th><th>Project</th><th>Assignee</th><th>Priority</th><th>Due</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for t in tasks %}
+        <tr>
+          <td style="color:var(--muted)">{{ t.id }}</td>
+          <td style="font-weight:500">{{ t.title }}</td>
+          <td style="color:var(--muted);font-size:0.82rem">{{ t.project }}</td>
+          <td>{{ t.assignee }}</td>
+          <td>
+            <span class="badge {% if t.priority == 'High' %}badge-red{% elif t.priority == 'Medium' %}badge-orange{% else %}badge-green{% endif %}">
+              {{ t.priority }}
+            </span>
+          </td>
+          <td style="color:var(--muted)">{{ t.due }}</td>
+          <td>
+            <span class="badge {% if t.status == 'Completed' %}badge-green{% elif t.status == 'In Progress' %}badge-blue{% else %}badge-orange{% endif %}">
+              {{ t.status }}
+            </span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

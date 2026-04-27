@@ -1,0 +1,174 @@
+{% extends "admin_panel/admin_base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block content %}
+<!-- Welcome bar -->
+<div style="margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+  <div>
+    <h2 class="syne" style="font-size:1.4rem;font-weight:800">Good day, Admin 👋</h2>
+    <p style="color:var(--muted);font-size:0.85rem;margin-top:0.2rem">Here's what's happening at TBKNS HUB today.</p>
+  </div>
+  <div style="font-size:0.8rem;color:var(--muted)" id="live-time"></div>
+</div>
+
+<!-- STAT CARDS -->
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;margin-bottom:2rem">
+  <div class="stat-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div class="label">Total Projects</div>
+      <div class="icon-wrap">📁</div>
+    </div>
+    <div class="value">{{ stats.total_projects }}</div>
+    <div class="change" style="color:var(--accent2)">↑ {{ stats.active_projects }} active</div>
+  </div>
+  <div class="stat-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div class="label">Total Clients</div>
+      <div class="icon-wrap">👥</div>
+    </div>
+    <div class="value">{{ stats.total_clients }}</div>
+    <div class="change" style="color:var(--accent2)">↑ Growing</div>
+  </div>
+  <div class="stat-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div class="label">Total Revenue</div>
+      <div class="icon-wrap">💰</div>
+    </div>
+    <div class="value" style="font-size:1.5rem">₦{{ stats.total_revenue|floatformat:0 }}</div>
+    <div class="change" style="color:var(--accent2)">This year</div>
+  </div>
+  <div class="stat-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div class="label">Pending Tasks</div>
+      <div class="icon-wrap">✅</div>
+    </div>
+    <div class="value" style="color:{% if stats.pending_tasks > 3 %}#ffaa00{% else %}var(--accent2){% endif %}">{{ stats.pending_tasks }}</div>
+    <div class="change" style="color:var(--muted)">Need attention</div>
+  </div>
+  <div class="stat-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div class="label">New Messages</div>
+      <div class="icon-wrap">💬</div>
+    </div>
+    <div class="value" style="color:var(--accent)">{{ stats.unread_messages }}</div>
+    <div class="change" style="color:var(--muted)">Unread</div>
+  </div>
+</div>
+
+<!-- CHART + MESSAGES -->
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:2rem">
+  <!-- Revenue Chart -->
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Revenue Overview</h3>
+      <span style="font-size:0.75rem;color:var(--muted)">2024</span>
+    </div>
+    <div class="panel-body">
+      <canvas id="revenueChart" height="100"></canvas>
+    </div>
+  </div>
+
+  <!-- Recent Messages -->
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Messages</h3>
+      <a href="{% url 'admin_messages' %}" style="font-size:0.75rem;color:var(--accent);text-decoration:none">View all →</a>
+    </div>
+    <div class="panel-body" style="padding:0">
+      {% for m in stats.recent_messages %}
+      <div style="padding:0.9rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.8rem">
+        <div style="width:8px;height:8px;border-radius:50%;background:{% if not m.read %}var(--accent2){% else %}transparent{% endif %};{% if m.read %}border:1px solid rgba(255,255,255,0.4){% endif %};flex-shrink:0"></div>
+        <div style="flex:1;overflow:hidden">
+          <div style="font-size:0.85rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.from }}</div>
+          <div style="font-size:0.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.subject }}</div>
+        </div>
+        <div style="font-size:0.72rem;color:var(--muted);flex-shrink:0">{{ m.time }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- RECENT PROJECTS TABLE -->
+<div class="panel">
+  <div class="panel-header">
+    <h3>Recent Projects</h3>
+    <a href="{% url 'admin_projects' %}" style="font-size:0.75rem;color:var(--accent);text-decoration:none">View all →</a>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th>Client</th>
+          <th>Status</th>
+          <th>Value</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in stats.recent_projects %}
+        <tr>
+          <td style="font-weight:500">{{ p.name }}</td>
+          <td style="color:var(--muted)">{{ p.client }}</td>
+          <td>
+            <span class="badge {% if p.status == 'Completed' %}badge-green{% elif p.status == 'In Progress' %}badge-blue{% else %}badge-orange{% endif %}">
+              {{ p.status }}
+            </span>
+          </td>
+          <td style="font-family:'Syne',sans-serif;font-weight:700">₦{{ p.value|floatformat:0 }}</td>
+          <td style="color:var(--muted)">{{ p.date }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Live clock
+function updateTime() {
+  const el = document.getElementById('live-time');
+  if (el) el.textContent = new Date().toLocaleString('en-NG', {weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+updateTime(); setInterval(updateTime, 60000);
+
+// Revenue chart
+const ctx = document.getElementById('revenueChart').getContext('2d');
+const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const data = {{ stats.revenue_monthly|safe }};
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [{
+      label: 'Revenue (₦)',
+      data: data,
+      backgroundColor: months.map((_, i) => i === 11 ? '#ff4d00' : 'rgba(255,77,0,0.3)'),
+      borderColor: months.map((_, i) => i === 11 ? '#ff4d00' : 'rgba(255,77,0,0.5)'),
+      borderWidth: 1,
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => '₦' + ctx.raw.toLocaleString()
+        }
+      }
+    },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 11 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 11 }, callback: v => '₦' + (v/1000).toFixed(0) + 'k' } }
+    }
+  }
+});
+</script>
+{% endblock %}

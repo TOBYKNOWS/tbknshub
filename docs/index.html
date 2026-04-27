@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TBKNS HUB – Digital Solutions & Innovation Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --ink: #0a0a0f;
+    --paper: #f5f3ee;
+    --accent: #ff4d00;
+    --accent2: #00d4aa;
+    --muted: #8c8c99;
+    --border: rgba(255,255,255,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--ink);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+  .syne { font-family: 'Syne', sans-serif; }
+
+  /* ── Noise texture overlay ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.35;
+  }
+
+  /* ── Nav ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1.25rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    backdrop-filter: blur(12px);
+    background: rgba(10,10,15,0.85);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: -0.02em; }
+  .logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a { font-size: 0.85rem; color: rgba(255,255,255,0.6); text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: #fff; }
+  .nav-cta {
+    background: var(--accent); color: #fff; padding: 0.55rem 1.4rem;
+    border-radius: 4px; font-size: 0.85rem; font-weight: 500; text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255,77,0,0.35); }
+
+  /* ── Hero ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 8rem 2rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-orb {
+    position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
+  }
+  .orb1 { width: 600px; height: 600px; background: rgba(255,77,0,0.12); top: -150px; right: -100px; }
+  .orb2 { width: 400px; height: 400px; background: rgba(0,212,170,0.08); bottom: 0; left: -100px; }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    padding: 0.4rem 1rem; border-radius: 100px; font-size: 0.78rem;
+    color: var(--accent2); letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 2rem; width: fit-content;
+    animation: fadeUp 0.7s ease both;
+  }
+  .hero-badge .dot { width: 6px; height: 6px; background: var(--accent2); border-radius: 50%; animation: pulse 2s infinite; }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 0.95; letter-spacing: -0.03em;
+    animation: fadeUp 0.8s ease 0.1s both;
+  }
+  .hero h1 .stroke { -webkit-text-stroke: 2px rgba(255,255,255,0.3); color: transparent; }
+  .hero h1 .accent { color: var(--accent); }
+
+  .hero-sub {
+    margin-top: 2rem; max-width: 560px;
+    color: rgba(255,255,255,0.55); font-size: 1.1rem; line-height: 1.7;
+    animation: fadeUp 0.8s ease 0.2s both;
+  }
+  .hero-actions { display: flex; gap: 1rem; margin-top: 2.5rem; animation: fadeUp 0.8s ease 0.3s both; }
+  .btn-primary {
+    background: var(--accent); color: #fff; padding: 0.85rem 2rem;
+    border-radius: 6px; font-size: 0.95rem; font-weight: 500; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(255,77,0,0.4); }
+  .btn-ghost {
+    border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7);
+    padding: 0.85rem 2rem; border-radius: 6px; font-size: 0.95rem; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+
+  .hero-stats {
+    display: flex; gap: 3rem; margin-top: 4rem;
+    animation: fadeUp 0.8s ease 0.4s both;
+  }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; }
+  .stat-label { font-size: 0.78rem; color: rgba(255,255,255,0.4); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 0.2rem; }
+  .stat-divider { width: 1px; background: rgba(255,255,255,0.1); }
+
+  /* ── Marquee ── */
+  .marquee-wrap {
+    overflow: hidden; border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02); padding: 1rem 0;
+  }
+  .marquee { display: flex; gap: 3rem; width: max-content; animation: marquee 20s linear infinite; }
+  .marquee span { font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.25); white-space: nowrap; }
+  .marquee span.hl { color: var(--accent); }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ── Sections ── */
+  section { padding: 7rem 2rem; max-width: 1200px; margin: 0 auto; }
+  .section-tag {
+    display: inline-block; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 1rem; font-weight: 600;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif; font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 800; line-height: 1.05; letter-spacing: -0.02em;
+  }
+
+  /* ── Services ── */
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5px; margin-top: 3rem; }
+  .service-card {
+    background: rgba(255,255,255,0.03); padding: 2rem;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.3s; cursor: default; position: relative; overflow: hidden;
+  }
+  .service-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,77,0,0.05), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .service-card:hover::before { opacity: 1; }
+  .service-card:hover { border-color: rgba(255,77,0,0.25); transform: translateY(-2px); }
+  .service-icon {
+    width: 44px; height: 44px; background: rgba(255,77,0,0.1);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.2rem; font-size: 1.3rem;
+  }
+  .service-card h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.6rem; }
+  .service-card p { font-size: 0.88rem; color: rgba(255,255,255,0.45); line-height: 1.65; }
+
+  /* ── How we work ── */
+  .process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 3rem; }
+  .process-step { position: relative; }
+  .step-num {
+    font-family: 'Syne', sans-serif; font-size: 3.5rem; font-weight: 800;
+    color: rgba(255,255,255,0.05); line-height: 1; margin-bottom: 0.5rem;
+  }
+  .process-step h4 { font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 0.5rem; }
+  .process-step p { font-size: 0.88rem; color: rgba(255,255,255,0.45); line-height: 1.65; }
+  .process-connector {
+    position: absolute; top: 2rem; right: -1.5rem;
+    width: 3rem; height: 1px; background: rgba(255,255,255,0.1);
+    display: none;
+  }
+  @media (min-width: 768px) { .process-connector { display: block; } }
+
+  /* ── CTA Banner ── */
+  .cta-banner {
+    margin: 0 2rem 4rem; padding: 4rem;
+    background: linear-gradient(135deg, rgba(255,77,0,0.12), rgba(0,212,170,0.06));
+    border: 1px solid rgba(255,77,0,0.2); border-radius: 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 2rem; flex-wrap: wrap;
+    position: relative; overflow: hidden;
+  }
+  .cta-banner::before {
+    content: 'TBKNS'; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 8rem;
+    position: absolute; right: -1rem; top: -1rem; opacity: 0.04; pointer-events: none;
+    color: white;
+  }
+
+  /* ── Contact ── */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 3rem; }
+  @media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } }
+  .contact-form input, .contact-form textarea, .contact-form select {
+    width: 100%; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;
+    padding: 0.85rem 1rem; color: #fff; font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; margin-bottom: 1rem; outline: none;
+    transition: border-color 0.2s;
+  }
+  .contact-form input:focus, .contact-form textarea:focus, .contact-form select:focus {
+    border-color: var(--accent);
+  }
+  .contact-form select option { background: #1a1a24; }
+  .contact-form textarea { height: 130px; resize: vertical; }
+  .contact-info-item { display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-start; }
+  .contact-icon {
+    width: 40px; height: 40px; min-width: 40px; background: rgba(255,77,0,0.1);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem;
+  }
+  .contact-info-item h5 { font-size: 0.78rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.05em; }
+  .contact-info-item p { font-size: 0.95rem; margin-top: 0.2rem; }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 2.5rem 2rem; display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  footer p { font-size: 0.82rem; color: rgba(255,255,255,0.3); }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; } 50% { opacity: 0.4; }
+  }
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── Mobile Nav ── */
+  .mobile-menu-btn { display: none; background: none; border: none; color: #fff; cursor: pointer; font-size: 1.35rem; }
+  .nav-links { display: flex; align-items: center; }
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem 1.5rem;
+      background: rgba(10,10,15,0.96);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    nav.open .nav-links { display: flex; }
+    .nav-links a { width: 100%; }
+    .mobile-menu-btn { display: block; }
+    .nav-cta { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">TBKNS<span>.</span>HUB</div>
+  <div class="nav-links">
+    <a href="#services">Services</a>
+    <a href="#process">Process</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+    <a href="/admin" style="color:rgba(255,77,0,0.7)">Admin ↗</a>
+  </div>
+  <a href="#contact" class="nav-cta">Get Started →</a>
+  <button class="mobile-menu-btn" aria-label="Open navigation menu" aria-expanded="false" onclick="toggleMobileNav(this)">☰</button>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div style="max-width:1200px;margin:0 auto;position:relative;z-index:1">
+    <div class="hero-badge">
+      <div class="dot"></div>
+      Digital Solutions Agency · Lagos, Nigeria
+    </div>
+    <h1 class="syne">
+      We <span class="accent">Build.</span><br>
+      We <span class="stroke">Optimize.</span><br>
+      We Scale.
+    </h1>
+    <p class="hero-sub">
+      TBKNS HUB is a full-service digital solutions & innovation studio. We solve real business problems with technology from websites to systems, data intelligence to digital growth.
+    </p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">Start a Project →</a>
+      <a href="#services" class="btn-ghost">Our Services</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">50+</div>
+        <div class="stat-label">Projects Delivered</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div>
+        <div class="stat-num">30+</div>
+        <div class="stat-label">Clients Served</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div>
+        <div class="stat-num">8</div>
+        <div class="stat-label">Service Verticals</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span>Web Development</span><span class="hl">✦</span>
+    <span>Business Systems</span><span class="hl">✦</span>
+    <span>Data Intelligence</span><span class="hl">✦</span>
+    <span>Mobile Apps</span><span class="hl">✦</span>
+    <span>UI/UX Design</span><span class="hl">✦</span>
+    <span>Brand Identity</span><span class="hl">✦</span>
+    <span>Digital Marketing</span><span class="hl">✦</span>
+    <span>Cybersecurity</span><span class="hl">✦</span>
+    <span>Power BI</span><span class="hl">✦</span>
+    <span>E-Commerce</span><span class="hl">✦</span>
+    <!-- duplicate for seamless loop -->
+    <span>Web Development</span><span class="hl">✦</span>
+    <span>Business Systems</span><span class="hl">✦</span>
+    <span>Data Intelligence</span><span class="hl">✦</span>
+    <span>Mobile Apps</span><span class="hl">✦</span>
+    <span>UI/UX Design</span><span class="hl">✦</span>
+    <span>Brand Identity</span><span class="hl">✦</span>
+    <span>Digital Marketing</span><span class="hl">✦</span>
+    <span>Cybersecurity</span><span class="hl">✦</span>
+    <span>Power BI</span><span class="hl">✦</span>
+    <span>E-Commerce</span><span class="hl">✦</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services" style="max-width:1200px">
+  <div class="reveal">
+    <div class="section-tag">What We Do</div>
+    <h2 class="section-title">End-to-end digital<br>solutions for your business</h2>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <div class="service-icon">🌐</div>
+      <h3>Web Development</h3>
+      <p>Business websites, landing pages, e-commerce stores, and admin portals — built fast and built right.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">⚙️</div>
+      <h3>Business Systems</h3>
+      <p>Custom dashboards, management systems, workflow automation, and enterprise software solutions.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📊</div>
+      <h3>Data Analytics</h3>
+      <p>Power BI dashboards, Excel intelligence, database management, and actionable business insights.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📱</div>
+      <h3>Mobile Apps</h3>
+      <p>Native and cross-platform Android & iOS applications that your customers will love using.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🎨</div>
+      <h3>Design & Brand</h3>
+      <p>UI/UX design, brand identity, graphics, and photo editing — visual work that converts.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📣</div>
+      <h3>Digital Marketing</h3>
+      <p>Social media management, paid advertising, content creation, and growth strategies.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🔒</div>
+      <h3>IT & Cybersecurity</h3>
+      <p>IT consultancy, network administration, cybersecurity audits, and infrastructure management.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🛒</div>
+      <h3>E-Commerce Solutions</h3>
+      <p>Full-stack online stores, payment gateway integrations, and inventory management systems.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process" style="max-width:1200px">
+  <div class="reveal">
+    <div class="section-tag">How We Work</div>
+    <h2 class="section-title">From idea to launch —<br>a clear, proven process</h2>
+  </div>
+  <div class="process-grid reveal">
+    <div class="process-step">
+      <div class="process-step-connector"></div>
+      <div class="step-num">01</div>
+      <h4>Discovery</h4>
+      <p>We dive deep into your business goals, requirements, and challenges to define the perfect scope.</p>
+      <div class="process-connector"></div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">02</div>
+      <h4>Scope & Plan</h4>
+      <p>Clear deliverables, timeline, and transparent pricing — before any work begins.</p>
+      <div class="process-connector"></div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">03</div>
+      <h4>Execute</h4>
+      <p>Expert specialists execute with regular updates and progress visibility throughout.</p>
+      <div class="process-connector"></div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">04</div>
+      <h4>QA & Review</h4>
+      <p>Rigorous quality assurance and client review to ensure every detail is perfect.</p>
+      <div class="process-connector"></div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">05</div>
+      <h4>Launch & Support</h4>
+      <p>Smooth delivery, handover, and ongoing support to keep your solution performing.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<div class="cta-banner reveal" style="max-width:1200px;margin:0 auto 4rem">
+  <div>
+    <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--accent2);margin-bottom:0.8rem">Ready to grow?</div>
+    <h2 class="syne" style="font-size:clamp(1.5rem,3vw,2.5rem);font-weight:800;line-height:1.1">Let's solve your business<br>problems together.</h2>
+    <p style="color:rgba(255,255,255,0.5);margin-top:0.8rem;font-size:0.92rem">No fluff. No long contracts. Just results.</p>
+  </div>
+  <a href="#contact" class="btn-primary" style="flex-shrink:0;font-size:1rem;padding:1rem 2.5rem">Start a Conversation →</a>
+</div>
+
+<!-- ABOUT -->
+<section id="about" style="max-width:1200px">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center" class="reveal">
+    <div>
+      <div class="section-tag">About TBKNS HUB</div>
+      <h2 class="section-title">A hub where businesses come to grow with tech</h2>
+      <p style="color:rgba(255,255,255,0.5);margin-top:1.5rem;line-height:1.8">
+        TBKNS HUB is a modern digital solutions agency built for Africa's growing businesses. We operate with a flexible, project-based specialist model — assembling the exact right team for every challenge.
+      </p>
+      <p style="color:rgba(255,255,255,0.5);margin-top:1rem;line-height:1.8">
+        From solo founders to enterprises — we meet you where you are and build what you need, reliably and on time.
+      </p>
+      <div style="display:flex;gap:2rem;margin-top:2rem">
+        <div>
+          <div class="syne" style="font-size:2rem;font-weight:800;color:var(--accent)">100%</div>
+          <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.05em">Delivery Rate</div>
+        </div>
+        <div>
+          <div class="syne" style="font-size:2rem;font-weight:800;color:var(--accent2)">48h</div>
+          <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.05em">Avg. Response Time</div>
+        </div>
+      </div>
+    </div>
+    <div style="position:relative">
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:2rem">
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:1.5rem">Our Vision</div>
+        <p class="syne" style="font-size:1.35rem;font-weight:700;line-height:1.5;color:rgba(255,255,255,0.9)">
+          "To establish TBKNS HUB as a leading digital solutions provider known for reliable, scalable, and impactful technology."
+        </p>
+        <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.07)">
+          <div style="font-size:0.85rem;font-weight:600">TBKNS HUB Founder</div>
+          <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-top:0.2rem">Project Manager & Lead Strategist</div>
+        </div>
+      </div>
+      <div style="position:absolute;top:-10px;right:-10px;width:100px;height:100px;background:rgba(255,77,0,0.1);border-radius:50%;filter:blur(30px)"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="max-width:1200px">
+  <div class="reveal">
+    <div class="section-tag">Get In Touch</div>
+    <h2 class="section-title">Let's build something<br>great together</h2>
+  </div>
+  <div class="contact-grid reveal">
+    <div>
+      <div class="contact-info-item">
+        <div class="contact-icon">📞</div>
+        <div>
+          <h5>Phone / WhatsApp</h5>
+          <p><a href="https://wa.me/2348137291205" style="color:inherit; text-decoration:none;">+234 813 729 1205</a></p>
+        </div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-icon">✉️</div>
+        <div>
+          <h5>Email</h5>
+          <p><a href="mailto:tbknshub@gmail.com" style="color:inherit; text-decoration:none;">tbknshub@gmail.com</a></p>
+        </div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-icon">📍</div>
+        <div>
+          <h5>Location</h5>
+          <p>Lagos, Nigeria</p>
+        </div>
+      </div>
+      <div style="margin-top:2rem;padding:1.5rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px">
+        <p style="font-size:0.88rem;color:rgba(255,255,255,0.5);line-height:1.7">
+          💬 Prefer WhatsApp? Tap the number above to chat directly. We typically respond within a few hours during business days.
+        </p>
+      </div>
+    </div>
+    <form id="contact-form" class="contact-form">
+      <input type="text" name="from_name" placeholder="Your Name" id="cf-name" required>
+      <input type="email" name="reply_to" placeholder="Email Address" id="cf-email" required>
+      <input type="hidden" name="subject" value="New TBKNS HUB contact request">
+      <select name="service" id="cf-service" required>
+        <option value="" disabled selected>Select a Service</option>
+        <option>Web Development</option>
+        <option>Business Systems</option>
+        <option>Data Analytics</option>
+        <option>Mobile App Development</option>
+        <option>Design & Brand Identity</option>
+        <option>Digital Marketing</option>
+        <option>IT & Cybersecurity</option>
+        <option>Other</option>
+      </select>
+      <textarea name="message" placeholder="Tell us about your project..." id="cf-message" required></textarea>
+      <button type="submit" class="btn-primary" style="border:none;cursor:pointer;width:100%;justify-content:center">
+        Send Message →
+      </button>
+      <div id="cf-feedback" style="margin-top:0.8rem;font-size:0.85rem;display:none"></div>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="max-width:1200px;margin:0 auto">
+  <div>
+    <div class="logo" style="margin-bottom:0.3rem">TBKNS<span style="color:var(--accent)">.</span>HUB</div>
+    <p>Digital Solutions & Innovation Studio</p>
+  </div>
+  <p>© 2024 TBKNS HUB. All rights reserved.</p>
+</footer>
+
+<script src="https://cdn.emailjs.com/sdk/3.2/email.min.js"></script>
+<script>
+// ── Scroll reveal ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── Mobile nav toggle ──
+function toggleMobileNav(button) {
+  const nav = button.closest('nav');
+  const open = nav.classList.toggle('open');
+  button.textContent = open ? '✕' : '☰';
+  button.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+  button.setAttribute('aria-expanded', open);
+}
+
+const navLinks = document.querySelectorAll('nav .nav-links a');
+navLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    const nav = document.querySelector('nav.open');
+    if (!nav) return;
+    const button = nav.querySelector('.mobile-menu-btn');
+    nav.classList.remove('open');
+    if (button) {
+      button.textContent = '☰';
+      button.setAttribute('aria-label', 'Open navigation menu');
+      button.setAttribute('aria-expanded', 'false');
+    }
+  });
+});
+
+// ── Contact form ──
+const contactForm = document.getElementById('contact-form');
+const contactFeedback = document.getElementById('cf-feedback');
+
+if (contactForm) {
+  contactForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    contactFeedback.style.display = 'block';
+    contactFeedback.style.color = '#00d4aa';
+    contactFeedback.textContent = 'Sending your message...';
+
+    const params = {
+      from_name: document.getElementById('cf-name').value,
+      reply_to: document.getElementById('cf-email').value,
+      subject: 'New TBKNS HUB contact request',
+      service: document.getElementById('cf-service').value,
+      message: document.getElementById('cf-message').value
+    };
+
+    emailjs.send('service_3kn7c9o', 'template_joyvbud', params, 'VGTUSCvl1Yhkfyl-j')
+      .then(function(response) {
+        contactFeedback.style.color = '#00d4aa';
+        contactFeedback.textContent = '✓ Message sent successfully. Thank you!';
+        contactForm.reset();
+        console.log('EmailJS response:', response);
+      }, function(error) {
+        contactFeedback.style.color = '#ff6b6b';
+        contactFeedback.textContent = 'Unable to send message. Please try again later.';
+        console.error('EmailJS error:', error);
+      });
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+{% extends "admin_panel/admin_base.html" %}
+{% block title %}Projects{% endblock %}
+{% block page_title %}Projects{% endblock %}
+{% block nav_projects %}active{% endblock %}
+
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+  <div>
+    <h2 class="syne" style="font-size:1.2rem;font-weight:800">All Projects</h2>
+    <p style="color:var(--muted);font-size:0.82rem">{{ projects|length }} total projects</p>
+  </div>
+  <button onclick="alert('Add project form — connect to DB in production')" style="background:var(--accent);border:none;color:#fff;padding:0.6rem 1.2rem;border-radius:6px;font-size:0.85rem;cursor:pointer">+ New Project</button>
+</div>
+
+<!-- Summary row -->
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2rem">
+  <div class="stat-card">
+    <div class="label">All</div>
+    <div class="value" style="font-size:1.8rem">{{ projects|length }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">In Progress</div>
+    <div class="value" style="font-size:1.8rem;color:#818cf8">{{ count_in_progress }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Completed</div>
+    <div class="value" style="font-size:1.8rem;color:var(--accent2)">{{ count_completed }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">In Review</div>
+    <div class="value" style="font-size:1.8rem;color:#ffaa00">{{ count_review }}</div>
+  </div>
+</div>
+
+<div class="panel">
+  <div style="overflow-x:auto">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Project Name</th>
+          <th>Client</th>
+          <th>Status</th>
+          <th>Value (₦)</th>
+          <th>Start Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in projects %}
+        <tr>
+          <td style="color:var(--muted)">{{ p.id }}</td>
+          <td style="font-weight:600">{{ p.name }}</td>
+          <td style="color:var(--muted)">{{ p.client }}</td>
+          <td>
+            <span class="badge {% if p.status == 'Completed' %}badge-green{% elif p.status == 'In Progress' %}badge-blue{% else %}badge-orange{% endif %}">
+              {{ p.status }}
+            </span>
+          </td>
+          <td class="syne" style="font-weight:700">{{ p.value|floatformat:0 }}</td>
+          <td style="color:var(--muted)">{{ p.date }}</td>
+          <td>
+            <button onclick="alert('Edit project {{ p.id }}')" style="background:rgba(255,255,255,0.07);border:none;color:var(--text);padding:0.3rem 0.8rem;border-radius:4px;font-size:0.75rem;cursor:pointer">Edit</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

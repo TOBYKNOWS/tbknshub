@@ -1,0 +1,29 @@
+{% extends "admin_panel/admin_base.html" %}
+{% block title %}Messages{% endblock %}
+{% block page_title %}Messages{% endblock %}
+{% block nav_messages %}active{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:1.5rem">
+  <h2 class="syne" style="font-size:1.2rem;font-weight:800">Messages</h2>
+  <p style="color:var(--muted);font-size:0.82rem">Client enquiries and contact form submissions</p>
+</div>
+<div class="panel">
+  {% for m in messages %}
+  <div style="padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:1rem;cursor:pointer" onclick="alert('Open message from {{ m.from }}')">
+    <div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:{% if not m.read %}var(--accent2){% else %}transparent{% endif %};{% if m.read %}border:1px solid rgba(255,255,255,0.4){% endif %}"></div>
+    <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,77,0,0.15);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;flex-shrink:0;color:var(--accent)">
+      {{ m.from|first }}
+    </div>
+    <div style="flex:1">
+      <div style="font-weight:{% if not m.read %}600{% else %}400{% endif %}">{{ m.from }}</div>
+      <div style="font-size:0.82rem;color:var(--muted)">{{ m.subject }}</div>
+    </div>
+    <div style="font-size:0.75rem;color:var(--muted)">{{ m.time }}</div>
+    {% if not m.read %}<span class="badge badge-green">New</span>{% endif %}
+  </div>
+  {% empty %}
+  <div style="padding:3rem;text-align:center;color:var(--muted)">No messages yet.</div>
+  {% endfor %}
+</div>
+{% endblock %}

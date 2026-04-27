@@ -1,0 +1,33 @@
+{% extends "admin_panel/admin_base.html" %}
+{% block title %}Team{% endblock %}
+{% block page_title %}Team{% endblock %}
+{% block nav_team %}active{% endblock %}
+
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+  <div>
+    <h2 class="syne" style="font-size:1.2rem;font-weight:800">Team Members</h2>
+    <p style="color:var(--muted);font-size:0.82rem">{{ team|length }} active specialists</p>
+  </div>
+  <button onclick="alert('Onboard team member')" style="background:var(--accent);border:none;color:#fff;padding:0.6rem 1.2rem;border-radius:6px;font-size:0.85rem;cursor:pointer">+ Add Member</button>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem">
+  {% for m in team %}
+  <div class="stat-card" style="padding:1.5rem">
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem">
+      <div style="width:44px;height:44px;border-radius:50%;background:rgba(255,77,0,0.15);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:var(--accent)">
+        {{ m.name|first }}
+      </div>
+      <div>
+        <div style="font-weight:600;font-size:0.95rem">{{ m.name }}</div>
+        <div style="font-size:0.78rem;color:var(--muted)">{{ m.role }}</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span class="badge badge-green">{{ m.status }}</span>
+      <span style="font-size:0.8rem;color:var(--muted)">{{ m.tasks }} active tasks</span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
