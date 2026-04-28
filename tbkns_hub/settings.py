@@ -8,12 +8,13 @@ SECRET_KEY = os.environ.get(
     'django-tbkns-hub-secret-2024-change-in-production'
 )
 
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS',
-    'web-production-5ee23.up.railway.app'
+    'web-production-5ee23.up.railway.app,127.0.0.1,localhost'
 ).split(',')
+ALLOWED_HOSTS = [host for host in ALLOWED_HOSTS if host]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
