@@ -3,11 +3,17 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-tbkns-hub-secret-2024-change-in-production'
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-tbkns-hub-secret-2024-change-in-production'
+)
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['web-production-5ee23.up.railway.app']
+ALLOWED_HOSTS = os.environ.get(
+    'ALLOWED_HOSTS',
+    'web-production-5ee23.up.railway.app'
+).split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
