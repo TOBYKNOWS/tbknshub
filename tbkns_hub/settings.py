@@ -3,11 +3,11 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-tbkns-hub-secret-2024-change-in-production')
+SECRET_KEY = 'django-tbkns-hub-secret-2024-change-in-production'
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = False
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = ['web-production-5ee23.up.railway.app']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -31,6 +31,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'tbkns_hub.urls'
 
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://web-production-5ee23.up.railway.app').split(',')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -49,14 +51,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tbkns_hub.wsgi.application'
 
-import dj_database_url
-
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
-        conn_max_age=600,
-        ssl_require=not DEBUG,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 STATIC_URL = '/static/'
